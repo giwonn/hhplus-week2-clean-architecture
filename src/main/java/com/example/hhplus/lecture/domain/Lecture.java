@@ -43,8 +43,16 @@ public class Lecture {
 		this.maxApplyCount = maxApplyCount;
 	}
 
-	public static Lecture of(long id, String name, String professer, Instant startTime, Instant endTime) {
-		return new Lecture(id, name, professer, startTime, endTime, 30);
+	private Lecture(String name, String professor, Instant startTime, Instant endTime, int maxApplyCount) {
+		this.name = name;
+		this.professor = professor;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.maxApplyCount = maxApplyCount;
+	}
+
+	public static Lecture of(String name, String professer, Instant startTime, Instant endTime) {
+		return new Lecture(name, professer, startTime, endTime, 30);
 	}
 
 	public void validateApply(long userId, List<Long> currentApplicants) {

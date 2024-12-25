@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-class LectureHistoryId implements Serializable {
+public class LectureHistoryId implements Serializable {
 
 	private long lectureId;
 
