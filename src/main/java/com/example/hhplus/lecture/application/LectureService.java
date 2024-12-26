@@ -7,9 +7,9 @@ import com.example.hhplus.lecture.domain.Lecture;
 import com.example.hhplus.lecture.domain.LectureRepository;
 import com.example.hhplus.lecturehistory.domain.LectureHistory;
 import com.example.hhplus.lecturehistory.domain.LectureHistoryRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,8 +23,9 @@ public class LectureService {
 
 	@Transactional
 	public Lecture apply(LectureApplyDto dto) {
-		Lecture lecture = lectureRepository.findById(dto.lectureId()).orElseThrow(LectureNotFoundException::new);
-		lecture.validateApply(dto.userId(), findAppliedUserIds(dto.lectureId()));
+		Lecture lecture = lectureRepository.findByIdForUpdate(dto.lectureId()).orElseThrow(LectureNotFoundException::new);
+		List<Long> userIds = findAppliedUserIds(dto.lectureId());
+		lecture.validateApply(dto.userId(), userIds);
 		lectureHistoryRepository.upsert(LectureHistory.of(dto.lectureId(), dto.userId()));
 
 		return lecture;
@@ -46,7 +47,8 @@ public class LectureService {
 	}
 
 	private List<Long> findAppliedUserIds(long lectureId) {
-		return lectureHistoryRepository.findByLectureId(lectureId).stream().map(LectureHistory::getLectureId).toList();
+		List<LectureHistory> test = lectureHistoryRepository.findByLectureId(lectureId);
+		return test.stream().map(LectureHistory::getUserId).toList();
 	}
 
 }

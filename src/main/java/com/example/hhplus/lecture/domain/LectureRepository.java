@@ -7,6 +7,8 @@ public interface LectureRepository {
 
 	Optional<Lecture> findById(long id);
 
+	Optional<Lecture> findByIdForUpdate(long id);
+
 	List<Lecture> findUpcomingListByDate(String date);
 
 	List<Lecture> findByIds(List<Long> ids);

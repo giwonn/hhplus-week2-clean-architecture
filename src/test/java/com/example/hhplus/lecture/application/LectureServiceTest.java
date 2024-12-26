@@ -46,7 +46,7 @@ class LectureServiceTest {
 			LectureHistory lectureHistory = LectureHistory.of(lectureId, userId);
 
 			doNothing().when(lecture).validateApply(anyLong(), anyList());
-			when(lectureRepository.findById(lectureId)).thenReturn(Optional.of(lecture));
+			when(lectureRepository.findByIdForUpdate(lectureId)).thenReturn(Optional.of(lecture));
 			when(lectureHistoryRepository.findByLectureId(lectureId)).thenReturn(List.of());
 			when(lectureHistoryRepository.upsert(any(LectureHistory.class))).thenReturn(lectureHistory);
 
@@ -59,7 +59,7 @@ class LectureServiceTest {
 			// given
 			long lectureId = 1L;
 			LectureApplyDto undefinedLecture = new LectureApplyDto(lectureId, 2L);
-			when(lectureRepository.findById(lectureId)).thenReturn(Optional.empty());
+			when(lectureRepository.findByIdForUpdate(lectureId)).thenReturn(Optional.empty());
 
 			// when & then
 			assertThatThrownBy(() -> lectureService.apply(undefinedLecture))
