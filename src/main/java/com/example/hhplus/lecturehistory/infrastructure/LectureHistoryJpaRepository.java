@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface LectureHistoryJpaRepository extends JpaRepository<LectureHistory, LectureHistoryId> {
 
+	List<LectureHistory> findByIdUserId(long userId);
+
 	List<LectureHistory> findByIdLectureId(long lectureId);
 
 }

@@ -39,6 +39,12 @@ public class LectureService {
 						.noneMatch(appliedLectureId -> appliedLectureId == lecture.getId())
 		).toList();
 	}
+
+	public List<Lecture> findAppliedLectures(long userId) {
+		List<LectureHistory> userAppliedLectures = lectureHistoryRepository.findByUserId(userId);
+		return lectureRepository.findByIds(userAppliedLectures.stream().map(LectureHistory::getLectureId).toList());
+	}
+
 	private List<Long> findAppliedUserIds(long lectureId) {
 		return lectureHistoryRepository.findByLectureId(lectureId).stream().map(LectureHistory::getLectureId).toList();
 	}

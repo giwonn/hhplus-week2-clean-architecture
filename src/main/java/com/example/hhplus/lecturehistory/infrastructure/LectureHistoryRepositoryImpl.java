@@ -14,6 +14,11 @@ public class LectureHistoryRepositoryImpl implements LectureHistoryRepository {
 	private final LectureHistoryJpaRepository lectureHistoryJpaRepository;
 
 	@Override
+	public List<LectureHistory> findByUserId(long id) {
+		return lectureHistoryJpaRepository.findByIdUserId(id);
+	}
+
+	@Override
 	public List<LectureHistory> findByLectureId(long id) {
 		return lectureHistoryJpaRepository.findByIdLectureId(id);
 	}

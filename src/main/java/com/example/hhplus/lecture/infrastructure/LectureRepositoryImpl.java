@@ -23,6 +23,12 @@ public class LectureRepositoryImpl implements LectureRepository {
 	public List<Lecture> findUpcomingListByDate(String date) {
 		return lectureJpaRepository.findByDate(date);
 	}
+
+	@Override
+	public List<Lecture> findByIds(List<Long> ids) {
+		return lectureJpaRepository.findByIds(ids);
+	}
+
 	@Override
 	public Lecture upsert(Lecture lecture) {
 		return lectureJpaRepository.save(lecture);

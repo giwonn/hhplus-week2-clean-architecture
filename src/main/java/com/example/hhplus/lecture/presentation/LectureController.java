@@ -3,6 +3,7 @@ package com.example.hhplus.lecture.presentation;
 import com.example.hhplus.lecture.application.LectureService;
 import com.example.hhplus.lecture.application.dto.AvailableLectureDto;
 import com.example.hhplus.lecture.domain.Lecture;
+import com.example.hhplus.lecture.presentation.dto.AppliedLectureRequest;
 import com.example.hhplus.lecture.presentation.dto.AvailableLectureResponse;
 import com.example.hhplus.lecture.presentation.dto.LectureApplyRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,12 @@ public class LectureController {
 	@GetMapping("/available")
 	public AvailableLectureResponse availableList(@ModelAttribute @Validated AvailableLectureDto dto) {
 		List<Lecture> lectures = lectureService.findUpcomingLecturesByUserId(dto.toDto());
+		return AvailableLectureResponse.from(lectures);
+	}
+
+	@GetMapping("/applied")
+	public AvailableLectureResponse findApplied(@ModelAttribute @Validated AppliedLectureRequest dto) {
+		List<Lecture> lectures = lectureService.findAppliedLectures(dto.userId());
 		return AvailableLectureResponse.from(lectures);
 	}
 

@@ -94,4 +94,38 @@ class LectureServiceTest {
 			assertThat(availableLectures.get(0).getId()).isEqualTo(4L);
 		}
 	}
+
+
+	@Nested
+	class 신청_완료_특강_조회 {
+
+		@Test
+		void 성공() {
+			// given
+			long userId = 1L;
+			List<LectureHistory> userAppliedLectures = List.of(
+					LectureHistory.of(2L, userId),
+					LectureHistory.of(3L, userId)
+			);
+			when(lectureHistoryRepository.findByUserId(userId)).thenReturn(userAppliedLectures);
+
+			List<Long> userAppliedLecturesIds = List.of(2L, 3L);
+			when(lectureRepository.findByIds(userAppliedLecturesIds)).thenReturn(
+					List.of(
+							Lecture.builder().id(2L).build(),
+							Lecture.builder().id(3L).build()
+					)
+			);
+
+			// when
+			List<Lecture> appliedLectures = lectureService.findAppliedLectures(userId);
+
+			// then
+			assertThat(appliedLectures).hasSize(2);
+			assertThat(appliedLectures.get(0).getId()).isEqualTo(2L);
+			assertThat(appliedLectures.get(1).getId()).isEqualTo(3L);
+		}
+
+	}
+
 }

@@ -112,6 +112,38 @@ class LectureServiceIntegrationTest {
 		}
 	}
 
+	@Nested
+	class 신청_완료_특강_조회 {
+
+		@Test
+		void 성공() {
+			// given
+			long userId = 1L;
+			lectureRepository.upsert(lecture);
+			lectureHistoryRepository.upsert(LectureHistory.of(lecture.getId(), userId));
+
+			// when
+			List<Lecture> appliedLectures = lectureService.findAppliedLectures(userId);
+
+			// then
+			assertThat(appliedLectures).hasSize(1);
+			assertThat(appliedLectures.get(0).getId()).isEqualTo(lecture.getId());
+		}
+
+		@Test
+		void 신청_완료한_특강이_없으면_빈_리스트_조회() {
+			// given
+			long userId = 1L;
+			lectureRepository.upsert(lecture);
+			lectureHistoryRepository.upsert(LectureHistory.of(lecture.getId(), userId));
+
+			// when
+			List<Lecture> appliedLectures = lectureService.findAppliedLectures(userId);
+
+			// then
+			assertThat(appliedLectures).hasSize(1);
+			assertThat(appliedLectures.get(0).getId()).isEqualTo(lecture.getId());
+		}
 	}
 
 }
