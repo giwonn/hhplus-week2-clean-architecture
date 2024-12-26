@@ -1,5 +1,6 @@
 package com.example.hhplus.lecture.application;
 
+import com.example.hhplus.lecture.application.dto.AvailableLectureDto;
 import com.example.hhplus.lecture.application.dto.LectureApplyDto;
 import com.example.hhplus.lecture.application.exception.LectureNotFoundException;
 import com.example.hhplus.lecture.domain.Lecture;
@@ -44,6 +45,7 @@ class LectureServiceIntegrationTest {
 			.id(1L)
 			.name("강의명1")
 			.professor("교수1")
+			.date("2024-01-01")
 			.startTime(Instant.now().plusSeconds(3600))
 			.endTime(Instant.now().plusSeconds(7200))
 			.maxApplyCount(30)
@@ -75,6 +77,40 @@ class LectureServiceIntegrationTest {
 			assertThatThrownBy(() -> lectureService.apply(undefinedLecture))
 					.isInstanceOf(LectureNotFoundException.class);
 		}
+	}
+
+	@Nested
+	class 신청_가능_특강_조회 {
+
+		@Test
+		void 성공() {
+			// given
+			lectureRepository.upsert(lecture);
+			long userId = 1L;
+			AvailableLectureDto dto = new AvailableLectureDto(userId, "2024-01-01");
+
+			// when
+			List<Lecture> availableLectures = lectureService.findUpcomingLecturesByUserId(dto);
+
+			// then
+			assertThat(availableLectures.get(0).getId()).isEqualTo(1L);
+		}
+
+		@Test
+		void 신청_가능한_특강이_없으면_빈_리스트_조회() {
+			// given
+			long userId = 1L;
+			lectureRepository.upsert(lecture);
+			lectureHistoryRepository.upsert(LectureHistory.of(lecture.getId(), userId));
+			AvailableLectureDto dto = new AvailableLectureDto(userId, lecture.getDate());
+
+			// when
+			List<Lecture> availableLectures = lectureService.findUpcomingLecturesByUserId(dto);
+
+			// then
+			assertThat(availableLectures).isEmpty();
+		}
+	}
 
 	}
 

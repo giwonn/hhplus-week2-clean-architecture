@@ -1,5 +1,6 @@
 package com.example.hhplus.lecture.application;
 
+import com.example.hhplus.lecture.application.dto.AvailableLectureDto;
 import com.example.hhplus.lecture.application.dto.LectureApplyDto;
 import com.example.hhplus.lecture.application.exception.LectureNotFoundException;
 import com.example.hhplus.lecture.domain.Lecture;
@@ -29,6 +30,15 @@ public class LectureService {
 		return lecture;
 	}
 
+	public List<Lecture> findUpcomingLecturesByUserId(AvailableLectureDto dto) {
+		List<Lecture> lectures = lectureRepository.findUpcomingListByDate(dto.date());
+		List<Long> appliedLectureIds = lectureHistoryRepository.findByUserId(dto.userId()).stream().map(LectureHistory::getLectureId).toList();
+
+		return lectures.stream().filter(
+				lecture -> appliedLectureIds.stream()
+						.noneMatch(appliedLectureId -> appliedLectureId == lecture.getId())
+		).toList();
+	}
 	private List<Long> findAppliedUserIds(long lectureId) {
 		return lectureHistoryRepository.findByLectureId(lectureId).stream().map(LectureHistory::getLectureId).toList();
 	}

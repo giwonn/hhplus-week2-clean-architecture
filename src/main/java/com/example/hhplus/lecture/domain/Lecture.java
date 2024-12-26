@@ -1,5 +1,6 @@
 package com.example.hhplus.lecture.domain;
 
+import com.example.hhplus.common.util.DateUtil;
 import com.example.hhplus.lecture.domain.exception.LectureAlreadyAppliedExceededException;
 import com.example.hhplus.lecture.domain.exception.LectureApplyDeadlineExceededException;
 import com.example.hhplus.lecture.domain.exception.LectureApplyLimitExceededException;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(indexes = @Index(name = "i_lecture_date", columnList = "date"))
 public class Lecture {
 
 	@Id
@@ -25,6 +27,9 @@ public class Lecture {
 	private String professor;
 
 	@NotNull
+	private String date;
+
+	@NotNull
 	private Instant startTime;
 
 	@NotNull
@@ -34,25 +39,34 @@ public class Lecture {
 	private int maxApplyCount;
 
 	@Builder
-	protected Lecture(long id, String name, String professor, Instant startTime, Instant endTime, int maxApplyCount) {
+	protected Lecture(long id, String name, String professor, String date, Instant startTime, Instant endTime, int maxApplyCount) {
 		this.id = id;
 		this.name = name;
 		this.professor = professor;
+		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.maxApplyCount = maxApplyCount;
 	}
 
-	private Lecture(String name, String professor, Instant startTime, Instant endTime, int maxApplyCount) {
+	private Lecture(String name, String professor, String date, Instant startTime, Instant endTime, int maxApplyCount) {
 		this.name = name;
 		this.professor = professor;
+		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.maxApplyCount = maxApplyCount;
 	}
 
 	public static Lecture of(String name, String professer, Instant startTime, Instant endTime) {
-		return new Lecture(name, professer, startTime, endTime, 30);
+		return new Lecture(
+				name,
+				professer,
+				DateUtil.format(startTime, "yyyy-MM-dd"),
+				startTime,
+				endTime,
+				30
+		);
 	}
 
 	public void validateApply(long userId, List<Long> currentApplicants) {

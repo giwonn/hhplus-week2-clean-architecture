@@ -1,5 +1,6 @@
 package com.example.hhplus.lecture.application;
 
+import com.example.hhplus.lecture.application.dto.AvailableLectureDto;
 import com.example.hhplus.lecture.application.dto.LectureApplyDto;
 import com.example.hhplus.lecture.application.exception.LectureNotFoundException;
 import com.example.hhplus.lecture.domain.Lecture;
@@ -66,4 +67,31 @@ class LectureServiceTest {
 		}
 	}
 
+
+	@Nested
+	class 신청_가능_특강_조회 {
+
+		@Test
+		void 성공() {
+			// given
+			long userId = 1L;
+			List<Lecture> upcomingLectures = List.of(
+					Lecture.builder().id(3L).date("2024-01-02").build(),
+					Lecture.builder().id(4L).date("2024-01-02").build()
+			);
+			List<LectureHistory> userAppliedLectures = List.of(
+					LectureHistory.of(3L, userId)
+			);
+
+			when(lectureRepository.findUpcomingListByDate("2024-01-02")).thenReturn(List.of(upcomingLectures.get(1)));
+			when(lectureHistoryRepository.findByUserId(userId)).thenReturn(userAppliedLectures);
+			AvailableLectureDto dto = new AvailableLectureDto(userId, "2024-01-02");
+
+			// when
+			List<Lecture> availableLectures = lectureService.findUpcomingLecturesByUserId(dto);
+
+			// then
+			assertThat(availableLectures.get(0).getId()).isEqualTo(4L);
+		}
+	}
 }
